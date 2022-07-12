@@ -1,0 +1,35 @@
+---
+- name: "update apt packages."
+  become: true
+  apt:
+    update_cache: yes
+
+- name: "upgrade packages"
+  become: true
+  apt:
+    upgrade: yes
+
+- name: "install node and npm"
+  become: true
+  apt:
+    name: ["nodejs","npm"]
+    state: latest
+    update_cache: yes
+
+- name: Install "pm2" node.js package globally.
+  npm:
+    name: pm2
+    global: yes
+
+- name: "Create ~/web directory"
+  shell: |
+    mkdir ~/web
+  
+- name: "copy index test file"
+  copy:
+    src: index.js
+    dest: ~/web/index.js
+
+- name: "start the web server"
+  shell: |
+    pm2 start ~/web/index.js -f
